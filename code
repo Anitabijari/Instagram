@@ -1,0 +1,324 @@
+CREATE DATABASE Instagram 
+GO
+use Instagram
+
+
+CREATE TABLE UserA
+(
+UserAID BIGINT IDENTITY(1,1) Primary Key,
+Username NVARCHAR(50) NOT NULL,
+UserFistName NVARCHAR(50) NOT NULL,
+UserLastName NVARCHAR(50) NOT NULL,
+Email NVARCHAR(100) NOT NULL,
+IsActive BIT   NULL,
+ProfilePicture IMAGE ,
+Bio NVARCHAR(100) NOT NULL,
+ActiveTime DATETIME NULL
+
+)
+
+CREATE TABLE LogInA
+(
+LogInAID BIGINT UNIQUE NOT NULL,
+Password NVARCHAR(50) NOT NULL
+)
+
+
+CREATE TABLE Post
+(
+PostID BIGINT IDENTITY(1,1) Primary Key,
+PostPicture VARBINARY(50)NOT NULL,
+PostText NVARCHAR (255)NOT NULL,
+PostDate DATETIME NOT NULL,
+UserAID BIGINT NOT NULL,
+)
+CREATE TABLE Comment
+(
+CommentID BIGINT IDENTITY(1,1) Primary Key,
+PostID BIGINT NOT NULL,
+UserAID BIGINT NOT NULL,
+CommentDate DATETIME NOT NULL,
+CommentText NVARCHAR (100)NOT NULL
+)
+CREATE TABLE LikeA
+(
+LikeID BIGINT IDENTITY(1,1) Primary Key,
+PostID BIGINT NOT NULL,
+UserAID BIGINT NOT NULL,
+IsLiked BIT NOT NULL 
+)
+
+CREATE TABLE Follower
+(
+FollowerID BIGINT IDENTITY(1,1) Primary Key,
+UserAID_1 BIGINT NOT NULL,
+UserAID_2 BIGINT NOT NULL
+)
+
+
+ALTER TABLE Post WITH CHECK ADD  CONSTRAINT FK_Post_UserA FOREIGN KEY(UserAID)
+REFERENCES UserA (UserAID);
+GO
+ALTER TABLE post  CHECK CONSTRAINT FK_Post_UserA
+GO
+
+
+ALTER TABLE Follower  WITH CHECK ADD  CONSTRAINT FK_Follower_UserA FOREIGN KEY(UserAID_1)
+REFERENCES UserA (UserAID);
+GO
+ALTER TABLE Follower  CHECK CONSTRAINT FK_Follower_UserA 
+GO
+
+ALTER TABLE Follower  WITH CHECK ADD  CONSTRAINT FK_Follower_UserA2 FOREIGN KEY(UserAID_2)
+REFERENCES UserA (UserAID);
+GO
+ALTER TABLE Follower  CHECK CONSTRAINT FK_Follower_UserA2 
+GO
+
+
+ALTER TABLE LikeA  WITH CHECK ADD  CONSTRAINT FK_LikeA_UserA FOREIGN KEY(UserAID)
+REFERENCES UserA (UserAID);
+GO
+ALTER TABLE LikeA  CHECK CONSTRAINT FK_LikeA_UserA 
+GO
+
+ALTER TABLE LikeA  WITH CHECK ADD  CONSTRAINT FK_LikeA_Post FOREIGN KEY(PostID)
+REFERENCES Post (PostID);
+GO
+ALTER TABLE LikeA  CHECK CONSTRAINT FK_LikeA_Post
+GO
+
+ALTER TABLE Comment  WITH CHECK ADD  CONSTRAINT FK_Comment_Post FOREIGN KEY(PostID)
+REFERENCES Post (PostID);
+GO
+ALTER TABLE Comment CHECK CONSTRAINT FK_Comment_Post
+GO
+
+ALTER TABLE Comment  WITH CHECK ADD  CONSTRAINT FK_comment_UserA FOREIGN KEY(UserAID)
+REFERENCES UserA (UserAID);
+GO
+ALTER TABLE Comment   CHECK CONSTRAINT FK_Comment_UserA 
+GO
+
+DROP TABLE LogInA 
+
+ALTER TABLE LogInA ADD CONSTRAINT FK_LoginA_UserA FOREIGN KEY(LoginAID) REFERENCES UserA(UserAID) 
+
+INSERT INTO UserA  (UserName, UserFistName, UserLastName, Email, Bio, ProfilePicture, IsActive, ActiveTime)
+VALUES
+('CoolCatsRule', 'John', 'Doe', 'user1@email.com', 'Bio for User 1', NULL, 1, '2023-10-09 10:00:00'),
+('SunnyDayz', 'Jane', 'Smith', 'user2@email.com', 'Bio for User 2', NULL, 1, '2023-10-09 10:05:00'),
+('MusicManiac', 'Robert', 'Johnson', 'user3@email.com', 'Bio for User 3', NULL, 1, '2023-10-09 10:10:00'),
+('AdventureGal', 'Emily', 'Anderson', 'user4@email.com', 'Bio for User 4', NULL, 1, '2023-10-09 10:15:00'),
+('GamerPro', 'Michael', 'Williams', 'user5@email.com', 'Bio for User 5', NULL, 1, '2023-10-09 10:20:00'),
+('NatureLover', 'Sarah', 'Brown', 'user6@email.com', 'Bio for User 6', NULL, 1, '2023-10-09 10:25:00'),
+('TechGeek', 'David', 'Wilson', 'user7@email.com', 'Bio for User 7', NULL, 1, '2023-10-09 10:30:00'),
+('BookWorm', 'Olivia', 'Taylor', 'user8@email.com', 'Bio for User 8', NULL, 1, '2023-10-09 10:35:00'),
+('FoodieFanatic', 'Daniel', 'Martinez', 'user9@email.com', 'Bio for User 9', NULL, 1, '2023-10-09 10:40:00'),
+('ArtisticSoul', 'Sophia', 'Garcia', 'user10@email.com', 'Bio for User 10', NULL, 1, '2023-10-09 10:45:00');
+
+INSERT INTO Post (PostPicture, PostText, PostDate, UserAID)
+VALUES
+(0x012345, 'This is the first post.', '2023-10-09 11:00:00', 1),
+(0x6789AB, 'Hello from Post 2!', '2023-10-09 11:05:00', 2),
+(0xCDEF01, 'Another day, another post.', '2023-10-09 11:10:00', 3),
+(0x234567, 'Post number four.', '2023-10-09 11:15:00', 4),
+(0x89ABCDEF, 'Fifth post here!', '2023-10-09 11:20:00', 5),
+(0x012345, 'Post 6 is up.', '2023-10-09 11:25:00', 6),
+(0x6789AB, 'Lucky number seven.', '2023-10-09 11:30:00', 7),
+(0xCDEF01, 'Eighth post in the list.', '2023-10-09 11:35:00', 8),
+(0x234567, 'Ninth post for today.', '2023-10-09 11:40:00', 9),
+(0x89ABCDEF, 'Tenth post coming through!', '2023-10-09 11:45:00', 10);
+
+-- Insert Comment 1
+
+INSERT INTO Comment (PostID, UserAID, CommentDate, CommentText)
+
+VALUES (1, 1, '2023-10-09 12:00:00', 'This post is so much fun! 😄'),
+
+       (2, 2, '2023-10-09 12:05:00', 'I am loving the creativity in this post! 🎨'),
+
+       (3, 3, '2023-10-09 12:10:00', 'Wow, what a great picture! 📸'),
+
+       (4, 4, '2023-10-09 12:15:00', 'This post made me smile! 😃'),
+
+       (5, 5, '2023-10-09 12:20:00', 'I can not get enough of this post! 🙌'),
+
+       (6, 6, '2023-10-09 12:25:00', 'Such an amazing post! 👏'),
+
+       (7, 7, '2023-10-09 12:30:00', 'This post is making me hungry! 🍔'),
+
+       (8, 8, '2023-10-09 12:35:00', 'I am getting travel vibes from this post! ✈️'),
+
+       (9, 9, '2023-10-09 12:40:00', 'This post is so thought-provoking! 🤔'),
+
+       (10, 10, '2023-10-09 12:45:00', 'Feeling inspired by this post! 💡'),
+
+(1, 2, '2023-10-09 13:00:00', 'Absolutely amazing! 😍'),
+
+       (1, 3, '2023-10-09 13:05:00', 'This post deserves all the likes! 👍'),
+
+       (1, 4, '2023-10-09 13:10:00', 'I wish I could be there right now! 🌴'),
+
+       (1, 5, '2023-10-09 13:15:00', 'Incredible shot! 🌅'),
+
+       (1, 6, '2023-10-09 13:20:00', 'I need a vacation like this! ✈️'),
+
+       (2, 7, '2023-10-09 13:25:00', 'This is pure art! 🎨'),
+
+       (2, 8, '2023-10-09 13:30:00', 'I am inspired by your creativity! 🙌'),
+
+       (2, 9, '2023-10-09 13:35:00', 'Great work! 👏'),
+
+       (2, 10, '2023-10-09 13:40:00', 'I wish I had your talent! 🌟'),
+
+       (2, 1, '2023-10-09 13:45:00', 'Keep it up! 💪');
+       
+      [14:20] Oscar Linden
+
+-- Insert 30 Likes
+
+INSERT INTO LikeA (PostID, UserAID, IsLiked)
+
+VALUES
+
+(1, 1, 1),
+
+(1, 2, 1),
+
+(2, 3, 1),
+
+(2, 4, 1),
+
+(3, 5, 1),
+
+(3, 6, 1),
+
+(4, 7, 1),
+
+(4, 8, 1),
+
+(5, 9, 1),
+
+(5, 10, 1),
+
+(1, 3, 1),
+
+(2, 5, 1),
+
+(3, 7, 1),
+
+(4, 9, 1),
+
+(5, 1, 1),
+
+(1, 5, 1),
+
+(2, 9, 1),
+
+(3, 1, 1),
+
+(4, 3, 1),
+
+(5, 7, 1),
+
+(1, 8, 1),
+
+(2, 10, 1),
+
+(3, 2, 1),
+
+(4, 6, 1),
+
+(5, 8, 1),
+
+(1, 4, 1),
+
+(2, 8, 1),
+
+(3, 10, 1),
+
+(4, 2, 1),
+
+(5, 6, 1);
+
+
+[14:22] Oscar Linden
+
+-- Insert 30 Follower Relationships (UserAID values limited to 10 or less)
+
+INSERT INTO Follower (UserAID_1, UserAID_2)
+
+VALUES
+
+(1, 2),
+
+(1, 3),
+
+(2, 1),
+
+(3, 1),
+
+(4, 1),
+
+(5, 2),
+
+(5, 3),
+
+(5, 4),
+
+(2, 3),
+
+(3, 2),
+
+(6, 7),
+
+(7, 8),
+
+(8, 9),
+
+(9, 10),
+
+(10, 6),
+
+(6, 1),
+
+(7, 2),
+
+(8, 3),
+
+(9, 4),
+
+(10, 5),
+
+(1, 6),
+
+(2, 7),
+
+(3, 8),
+
+(4, 9),
+
+(5, 10),
+
+(6, 10),
+
+(7, 1),
+
+(8, 2),
+
+(9, 3),
+
+(10, 4);
+INSERT INTO LogInA (LogInAID, Password)
+VALUES
+(1, 'panmmkhc1'),
+(2, 'sjdcvsk2'),
+(3, 'dvksjhfvlkj3'),
+(4, 'dfvstrh4'),
+(5, 'dvdfjvljd5'),
+(6, 'adtgdrjy6'),
+(7, 'gdbsfhdtyd7'),
+(8, 'ryyjhdtyjdty8'),
+(9, 'yrjhtyjtedyj9'),
+(10, 'fgndsyhjdtyj10');
